@@ -1,0 +1,7 @@
+%h2 Similar movies for #{@movie.title}
+
+%ul
+  - @same_director.each do |title|
+    %li= title
+
+= link_to 'Back', movies_path

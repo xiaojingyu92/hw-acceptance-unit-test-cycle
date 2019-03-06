@@ -1,0 +1,60 @@
+Using the default profile...
+Feature: create movie
+  As a user
+  So that I can add movie
+  I want to manage the movie list
+
+  Background: movies are in the database # features/create_movies.feature:7
+    Given the following movies exist:    # features/step_definitions/movies_steps.rb:2
+      | title        | rating | director     | release_date |
+      | Star Wars    | PG     | George Lucas | 1977-05-25   |
+      | Blade Runner | PG     | Ridley Scott | 1982-06-25   |
+      | Alien        | R      |              | 1979-05-25   |
+      | THX-1138     | R      | George Lucas | 1971-03-11   |
+
+  Scenario: add movie to database             # features/create_movies.feature:16
+    When I am on the RottenPotatoes home page # features/step_definitions/web_steps.rb:44
+    When I follow "Add new movie"             # features/step_definitions/web_steps.rb:56
+    When I fill in "Title" with "Sample"      # features/step_definitions/web_steps.rb:60
+    And I press "Save Changes"                # features/step_definitions/web_steps.rb:52
+    Then I should see "Sample"                # features/step_definitions/web_steps.rb:105
+
+Feature: search for movies by director
+  As a movie buff
+  So that I can find movies with my favorite director
+  I want to include and serach on director information in movies I enter
+
+  Background: movies in database      # features/search_for_movies_by_director.feature:7
+    Given the following movies exist: # features/step_definitions/movies_steps.rb:2
+      | title        | rating | director     | release_date |
+      | Star Wars    | PG     | George Lucas | 1977-05-25   |
+      | Blade Runner | PG     | Ridley Scott | 1982-06-25   |
+      | Alien        | R      |              | 1979-05-25   |
+      | THX-1138     | R      | George Lucas | 1971-03-11   |
+
+  Scenario: add director to existing movie                # features/search_for_movies_by_director.feature:16
+    When I go to the edit page for "Alien"                # features/step_definitions/web_steps.rb:48
+    And I fill in "Director" with "Ridley Scott"          # features/step_definitions/web_steps.rb:60
+    And I press "Update Movie Info"                       # features/step_definitions/web_steps.rb:52
+    Then the director of "Alien" should be "Ridley Scott" # features/step_definitions/movies_steps.rb:27
+
+  Scenario: find movie with same director                       # features/search_for_movies_by_director.feature:22
+    Given I am on the details page for "Star Wars"              # features/step_definitions/web_steps.rb:44
+    When I follow "Find Movies With Same Director"              # features/step_definitions/web_steps.rb:56
+    Then I should be on the Similar Movies page for "Star Wars" # features/step_definitions/web_steps.rb:230
+    And I should see "THX-1138"                                 # features/step_definitions/web_steps.rb:105
+    But I should not see "Blade Runner"                         # features/step_definitions/web_steps.rb:123
+
+  Scenario: can't find similar movies if we don't know director (sad path) # features/search_for_movies_by_director.feature:29
+    Given I am on the details page for "Alien"                             # features/step_definitions/web_steps.rb:44
+    Then I should not see "Ridley Scott"                                   # features/step_definitions/web_steps.rb:123
+    When I follow "Find Movies With Same Director"                         # features/step_definitions/web_steps.rb:56
+    Then I should be on the home page                                      # features/step_definitions/web_steps.rb:230
+    And I should see "'Alien' has no director info"                        # features/step_definitions/web_steps.rb:105
+
+4 scenarios (4 passed)
+23 steps (23 passed)
+0m0.263s
+Coverage report generated for Cucumber Features to /home/xiaojing/606/hw-acceptance-unit-test-cycle-github/rottenpotatoes/coverage. 47 / 62 LOC (75.81%) covered.
+
+
